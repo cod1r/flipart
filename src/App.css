@@ -15,10 +15,10 @@ body {
 
 .container {
   display: grid;
-  grid-template-rows: repeat(8, 100px);
-  grid-template-columns: repeat(8, 100px);
-  width: 800px;
-  height: 800px;
+  grid-template-rows: repeat(8, 75px);
+  grid-template-columns: repeat(8, 75px);
+  width: 600px;
+  height: 600px;
 }
 
 .slot {
