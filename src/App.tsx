@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import worker from './worker?worker'
-const w = new worker()
+const w = new Worker(new URL('./worker', import.meta.url), { type: 'module' })
 import './App.css'
 function App() {
   const [grid, setGrid] = useState<string[][]>()
