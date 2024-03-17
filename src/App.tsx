@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
+import worker from './worker?worker'
+const w = new worker()
 import './App.css'
 function App() {
   const [grid, setGrid] = useState<string[][]>()
   useEffect(() => {
-    import('./worker.ts').then((_) => {
-      onmessage = (e) => {
-        setGrid(e.data)
-      }
-    })
+    w.onmessage = (e) => {
+      setGrid(e.data)
+    }
   }, [])
   return (
     <div
