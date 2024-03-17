@@ -46,7 +46,8 @@ function partition(
                 let clone = structuredClone(grid)
                 let color = colors[Math.floor(Math.random() * colors.length)]
                 coords.forEach((e) => {
-                  clone[r + e[0]][c + e[1]] = s + color
+                  clone[r + e[0]][c + e[1]] =
+                    (e[0] === 0 && e[1] === 0 ? 'c;' : '') + s + color
                 })
                 partition(clone, obj)
               }
