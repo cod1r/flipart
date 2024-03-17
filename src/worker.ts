@@ -1,7 +1,12 @@
 import { colors, orientations, shapes } from './shapes.ts'
 function partition(
   grid: string[][],
-  obj: { stop: boolean; result: string[][] | null }
+  groupings: Array<[string, Array<[number, number]>]>,
+  obj: {
+    stop: boolean
+    groupings: Array<[string, Array<[number, number]>]>
+    result: string[][] | null
+  }
 ) {
   if (obj.stop) {
     return
@@ -45,11 +50,15 @@ function partition(
                 placed = true
                 let clone = structuredClone(grid)
                 let color = colors[Math.floor(Math.random() * colors.length)]
+                let new_groupings = structuredClone(groupings)
+                let group: Array<[number, number]> = []
                 coords.forEach((e) => {
+                  group.push([r + e[0], c + e[1]])
                   clone[r + e[0]][c + e[1]] =
                     (e[0] === 0 && e[1] === 0 ? 'c;' : '') + s + color
                 })
-                partition(clone, obj)
+                new_groupings.push([s, group])
+                partition(clone, new_groupings, obj)
               }
             }
           }
@@ -71,6 +80,7 @@ function partition(
   }
   if (space_count === 0) {
     obj.stop = true
+    obj.groupings = structuredClone(groupings)
     obj.result = structuredClone(grid)
   }
   return
@@ -85,9 +95,14 @@ let grid = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
-let obj: { stop: boolean; result: string[][] } = {
+let obj: {
+  stop: boolean
+  groupings: Array<[string, Array<[number, number]>]>
+  result: string[][]
+} = {
   stop: false,
+  groupings: [],
   result: grid,
 }
-partition(grid, obj)
-postMessage(obj.result)
+partition(grid, [], obj)
+postMessage([obj.result, obj.groupings])
