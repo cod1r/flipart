@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-const w = new Worker(new URL('./worker', import.meta.url), { type: 'module' })
+import worker from './worker?worker'
+const w = new worker()
 import './App.css'
 function App() {
   const [grid, setGrid] = useState<string[][]>()
@@ -19,7 +20,7 @@ function App() {
       }}
     >
       <div className="container">
-        {grid?.map((row, ridx) =>
+        {grid && grid.map((row, ridx) =>
           row.map((c, cidx) => (
             <div
               key={`${ridx}-${cidx}`}

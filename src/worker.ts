@@ -90,12 +90,3 @@ let obj: { stop: boolean; result: string[][] } = {
 }
 partition(grid, obj)
 postMessage(obj.result)
-onmessage = (e) => {
-  console.log(e.data)
-}
-onmessageerror = (e) => {
-  console.log(e.data)
-}
-onerror = (e) => {
-  console.log(e)
-}
