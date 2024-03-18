@@ -16,7 +16,7 @@ function partition(
       if (grid[r][c] === ' ') {
         function placeShape() {
           let placed = false
-          let indices: Array<number> = []
+          const indices: Array<number> = []
           while (indices.length < shapes.length) {
             let i = Math.floor(Math.random() * shapes.length)
             while (indices.includes(i)) {
@@ -24,9 +24,9 @@ function partition(
             }
             indices.push(i)
           }
-          for (let i of indices) {
-            let s = shapes[i]
-            let orientation_indices: Array<number> = []
+          for (const i of indices) {
+            const s = shapes[i]
+            const orientation_indices: Array<number> = []
             while (orientation_indices.length < orientations[s].length) {
               let i = Math.floor(Math.random() * orientations[s].length)
               while (orientation_indices.includes(i)) {
@@ -34,9 +34,9 @@ function partition(
               }
               orientation_indices.push(i)
             }
-            for (let ori_idx of orientation_indices) {
-              let coords = orientations[s][ori_idx]
-              let valid = coords.reduce(
+            for (const ori_idx of orientation_indices) {
+              const coords = orientations[s][ori_idx]
+              const valid = coords.reduce(
                 (a, e) =>
                   a &&
                   r + e[0] >= 0 &&
@@ -48,10 +48,10 @@ function partition(
               )
               if (valid) {
                 placed = true
-                let clone = structuredClone(grid)
-                let color = colors[Math.floor(Math.random() * colors.length)]
-                let new_groupings = structuredClone(groupings)
-                let group: Array<[number, number]> = []
+                const clone = structuredClone(grid)
+                const color = colors[Math.floor(Math.random() * colors.length)]
+                const new_groupings = structuredClone(groupings)
+                const group: Array<[number, number]> = []
                 coords.forEach((e) => {
                   group.push([r + e[0], c + e[1]])
                   clone[r + e[0]][c + e[1]] =
@@ -85,7 +85,7 @@ function partition(
   }
   return
 }
-let grid = [
+const grid = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -95,7 +95,7 @@ let grid = [
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
 ]
-let obj: {
+const obj: {
   stop: boolean
   groupings: Array<[string, Array<[number, number]>]>
   result: string[][]

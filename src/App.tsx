@@ -6,18 +6,19 @@ function App() {
   const [grid, setGrid] = useState<string[][]>()
   const [placements, setPlacements] =
     useState<Array<[string, Array<[number, number]>]>>()
-  const [rotations, setRotations] = useState<Array<string>>()
+  const [rotations, setRotations] = useState<
+    [number | undefined, Array<string> | undefined]
+  >([undefined, undefined])
   const [showAns, setShowAns] = useState<boolean>(false)
-  const [focus, setFocus] = useState<number>()
   useEffect(() => {
     w.onmessage = (e) => {
       setGrid(e.data[0])
-      let r = []
+      const r = []
       for (let i = 0; i < e.data[1].length; ++i) {
-        let deg = ['90', '180', '270'][Math.floor(Math.random() * 3)]
+        const deg = ['90', '180', '270'][Math.floor(Math.random() * 3)]
         r.push(deg)
       }
-      setRotations(r)
+      setRotations([undefined, r])
       setPlacements(e.data[1])
     }
   }, [])
@@ -39,7 +40,10 @@ function App() {
           left: '50px',
           height: '100px',
         }}
-        onClick={() => setShowAns((prev) => !prev)}
+        onClick={() => {
+          setShowAns((prev) => !prev)
+          setRotations([undefined, rotations[1]])
+        }}
       >
         {!showAns ? 'show answer' : 'hide answer'}
       </button>
@@ -54,8 +58,9 @@ function App() {
                   key={`${ridx}-${cidx}`}
                   style={{
                     position: 'relative',
-                    zIndex: cidx === 0 ? '1000' : focus === ridx ? '500' : '0',
-                    border: focus === ridx ? 'solid white' : 'none',
+                    zIndex:
+                      cidx === 0 ? '1000' : rotations[0] === ridx ? '500' : '0',
+                    border: rotations[0] === ridx ? 'solid white' : 'none',
                     backgroundColor:
                       cidx === 0
                         ? grid[c[0]][c[1]].slice(3)
@@ -63,11 +68,12 @@ function App() {
                     gridRow: `${c[0] + 1} / ${c[0] + 1}`,
                     gridColumn: `${c[1] + 1} / ${c[1] + 1}`,
                     transformOrigin: `${(place[1][0][1] - c[1]) * 75 + 75 / 2}px ${(place[1][0][0] - c[0]) * 75 + 75 / 2}px`,
-                    transform: `rotate(${rotations[ridx]}deg)`,
+                    transform:
+                      rotations[1] && `rotate(${rotations[1][ridx]}deg)`,
                     animation:
-                      focus === ridx
+                      rotations[0] === ridx && rotations[1]
                         ? `0.2s ease-out forwards ${(() => {
-                            switch (rotations[ridx]) {
+                            switch (rotations[1][ridx]) {
                               case '0':
                                 return 'two-seventy-to-three-sixty'
                               case '90':
@@ -84,14 +90,14 @@ function App() {
                   {cidx === 0 ? (
                     <div
                       onClick={() => {
-                        setFocus(ridx)
                         setRotations((prevR) => {
-                          if (prevR) {
-                            let newR = [...prevR]
-                            let oldRValue = parseInt(newR[ridx])
+                          if (prevR[1]) {
+                            const newR = [...prevR[1]]
+                            const oldRValue = parseInt(newR[ridx])
                             newR[ridx] = ((oldRValue + 90) % 360).toString()
-                            return newR
+                            return [ridx, newR]
                           }
+                          return prevR
                         })
                       }}
                       style={{
