@@ -8,6 +8,7 @@ function App() {
     useState<Array<[string, Array<[number, number]>]>>()
   const [rotations, setRotations] = useState<Array<string>>()
   const [showAns, setShowAns] = useState<boolean>(false)
+  const [focus, setFocus] = useState<number>()
   useEffect(() => {
     w.onmessage = (e) => {
       setGrid(e.data[0])
@@ -40,7 +41,7 @@ function App() {
         }}
         onClick={() => setShowAns((prev) => !prev)}
       >
-        show answer
+        {!showAns ? 'show answer' : 'hide answer'}
       </button>
       <div className="container">
         {!showAns
@@ -53,7 +54,8 @@ function App() {
                   key={`${ridx}-${cidx}`}
                   style={{
                     position: 'relative',
-                    zIndex: cidx === 0 ? '1000' : '0',
+                    zIndex: cidx === 0 ? '1000' : focus === ridx ? '500' : '0',
+                    border: focus === ridx ? 'solid white' : 'none',
                     backgroundColor:
                       cidx === 0
                         ? grid[c[0]][c[1]].slice(3)
@@ -62,16 +64,32 @@ function App() {
                     gridColumn: `${c[1] + 1} / ${c[1] + 1}`,
                     transformOrigin: `${(place[1][0][1] - c[1]) * 75 + 75 / 2}px ${(place[1][0][0] - c[0]) * 75 + 75 / 2}px`,
                     transform: `rotate(${rotations[ridx]}deg)`,
+                    animation:
+                      focus === ridx
+                        ? `0.2s ease-out forwards ${(() => {
+                            switch (rotations[ridx]) {
+                              case '0':
+                                return 'two-seventy-to-three-sixty'
+                              case '90':
+                                return 'zero-to-ninety'
+                              case '180':
+                                return 'ninety-to-one-eighty'
+                              case '270':
+                                return 'one-eighty-to-two-seventy'
+                            }
+                          })()}`
+                        : '',
                   }}
                 >
                   {cidx === 0 ? (
                     <div
                       onClick={() => {
+                        setFocus(ridx)
                         setRotations((prevR) => {
                           if (prevR) {
                             let newR = [...prevR]
                             let oldRValue = parseInt(newR[ridx])
-                            newR[ridx] = (oldRValue + 90).toString()
+                            newR[ridx] = ((oldRValue + 90) % 360).toString()
                             return newR
                           }
                         })
@@ -136,9 +154,10 @@ function App() {
               ))
             )
           : grid &&
-            grid.map((r) =>
-              r.map((c) => (
+            grid.map((r, ridx) =>
+              r.map((c, cidx) => (
                 <div
+                  key={`${ridx}-${cidx}`}
                   style={{
                     backgroundColor: c[0] === 'c' ? c.slice(3) : c.slice(1),
                   }}
@@ -146,7 +165,6 @@ function App() {
                   {c[0] === 'c' && (
                     <div
                       style={{
-                        cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
