@@ -32,21 +32,24 @@ function App() {
         alignItems: 'center',
       }}
     >
-      <button
-        style={{
-          position: 'absolute',
-          top: '80%',
-          bottom: '0',
-          left: '50px',
-          height: '100px',
-        }}
-        onClick={() => {
-          setShowAns((prev) => !prev)
-          setRotations([undefined, rotations[1]])
-        }}
-      >
-        {!showAns ? 'show answer' : 'hide answer'}
-      </button>
+      {rotations[1] && rotations[1].reduce((a, e) => a && e === '0', true) && (
+        <div
+          style={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignContent: 'center',
+            top: '50%',
+            zIndex: 5000,
+            fontSize: '50px',
+            color: 'black',
+          }}
+        >
+          CONGRATS
+        </div>
+      )}
       <div className="container">
         {!showAns
           ? grid &&
@@ -67,7 +70,7 @@ function App() {
                         : grid[c[0]][c[1]].slice(1),
                     gridRow: `${c[0] + 1} / ${c[0] + 1}`,
                     gridColumn: `${c[1] + 1} / ${c[1] + 1}`,
-                    transformOrigin: `${(place[1][0][1] - c[1]) * 75 + 75 / 2}px ${(place[1][0][0] - c[0]) * 75 + 75 / 2}px`,
+                    transformOrigin: `${(place[1][0][1] - c[1]) * (400 / 8) + 400 / 8 / 2}px ${(place[1][0][0] - c[0]) * (400 / 8) + 400 / 8 / 2}px`,
                     transform:
                       rotations[1] && `rotate(${rotations[1][ridx]}deg)`,
                     animation:

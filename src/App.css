@@ -16,10 +16,10 @@ body {
 .container {
   outline: solid;
   display: grid;
-  grid-template-rows: repeat(8, 75px);
-  grid-template-columns: repeat(8, 75px);
-  width: 600px;
-  height: 600px;
+  grid-template-rows: repeat(8, calc(400px / 8));
+  grid-template-columns: repeat(8, calc(400px / 8));
+  width: 400px;
+  height: 400px;
 }
 
 .slot {
